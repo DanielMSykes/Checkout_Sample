@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 namespace Checkout_Sample
 {
-    public class Shop
+    public static class Shop
     {
+        /* Product/Price mappings */
+        public static Dictionary<Type, decimal> StockSKUs = new Dictionary<Type, decimal>() 
+        {
+            {typeof(Products.A), 10m },
+            {typeof(Products.B), 15m },
+            {typeof(Products.C), 40m },
+            {typeof(Products.D), 55m },
+        };
+
     }
 }
