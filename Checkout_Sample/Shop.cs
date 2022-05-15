@@ -15,8 +15,6 @@ namespace Checkout_Sample
             {typeof(Products.D), 55m },
         };
 
-<<<<<<< Updated upstream
-=======
         /*Introduce discounts*/
         public static Dictionary<Type, Func<List<Product>, decimal>> Discounts = new Dictionary<Type, Func<List<Product>, decimal>>()
         {
@@ -39,6 +37,7 @@ namespace Checkout_Sample
             }},
             /*25% off for every 2 of 'D' purchased together*/
             {typeof(Products.D), sku => {
+
                 var multipackD = sku.Where(s => s.GetType() == typeof(Products.D)).ToList();
                 var count = multipackD.Count;
 
@@ -56,7 +55,6 @@ namespace Checkout_Sample
             }}
         };
 
->>>>>>> Stashed changes
         /*Return the actual price of products*/
         public static Product? GetProduct(Type product)
         {
@@ -72,9 +70,7 @@ namespace Checkout_Sample
             }
         }
 
-<<<<<<< Updated upstream
-        /**/
-=======
+             
         /*return the price of the basket with all discounts applied*/
         public static decimal CalculatePrice(List<Product> stockUnits)
         {
@@ -100,6 +96,5 @@ namespace Checkout_Sample
 
             return sum;
         }
->>>>>>> Stashed changes
     }
 }
