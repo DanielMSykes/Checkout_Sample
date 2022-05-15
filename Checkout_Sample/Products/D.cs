@@ -8,6 +8,6 @@ namespace Checkout_Sample.Products
 {
     public class D : Product 
     {
-        public D(decimal price) : base(price) { }
+        public D(double price) : base(price) { }
     }
 }

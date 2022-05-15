@@ -7,16 +7,16 @@ namespace Checkout_Sample
     public static class Shop
     {
         /* Product/Price mappings */
-        public static Dictionary<Type, decimal> SKUs = new Dictionary<Type, decimal>()
+        public static Dictionary<Type, double> SKUs = new Dictionary<Type, double>()
         {
-            {typeof(Products.A), 10m },
-            {typeof(Products.B), 15m },
-            {typeof(Products.C), 40m },
-            {typeof(Products.D), 55m },
+            {typeof(Products.A), 10.00 },
+            {typeof(Products.B), 15.00 },
+            {typeof(Products.C), 40.00 },
+            {typeof(Products.D), 55.00 },
         };
 
         /*Introduce discounts*/
-        public static Dictionary<Type, Func<List<Product>, decimal>> Discounts = new Dictionary<Type, Func<List<Product>, decimal>>()
+        public static Dictionary<Type, Func<List<Product>, double>> Discounts = new Dictionary<Type, Func<List<Product>, double>>()
         {
             /*3 for 40 of B*/
             {typeof(Products.B), sku => {
@@ -25,14 +25,15 @@ namespace Checkout_Sample
 
                 if (count > 0)
                 {
-                    var price = multipackB[0].Price;
-                    var discount = Math.Floor((count / 3.0m) * 5);
+                    double price = multipackB[0].Price;
+                    double discount = Math.Floor(count / 3.00) * 5;
+                    double discountedPrice = price - discount;
 
-                    return (price - discount);
+                    return discountedPrice;
                 }
                 else
                 {
-                    return 0m;
+                    return 0;
                 }
             }},
             /*25% off for every 2 of 'D' purchased together*/
@@ -43,14 +44,14 @@ namespace Checkout_Sample
 
                 if (count > 0)
                 {
-                    var price = multipackD[0].Price;
-                    var discount = Math.Floor((count / 2.0m) * 27.5m);
+                    double price = multipackD[0].Price;
+                    double discount = Math.Floor((count / 2) * 27.50);
 
-                    return (price - discount);
+                    return price - discount;
                 }
                 else
                 {
-                    return 0m;
+                    return 0;
                 }
             }}
         };
@@ -58,7 +59,7 @@ namespace Checkout_Sample
         /*Return the actual price of products*/
         public static Product? GetProduct(Type product)
         {
-            decimal price;
+            double price;
 
             if (Shop.SKUs.TryGetValue(product, out price))
             {
@@ -72,20 +73,22 @@ namespace Checkout_Sample
 
              
         /*return the price of the basket with all discounts applied*/
-        public static decimal CalculatePrice(List<Product> stockUnits)
+        public static double CalculatePrice(List<Product> stockUnits)
         {
-            decimal sum = 0m;
+            double sum = 0;
 
             foreach (Type sku in Shop.SKUs.Keys)
             {
-                if (Shop.Discounts.TryGetValue(sku, out var discount))
+                Func<List<Product>, double> discount;
+
+                if (Shop.Discounts.TryGetValue(sku, out discount))
                 {
                     sum += discount(stockUnits);
                 }
                 else
                 {
-                    var products = stockUnits.Where(u => u.GetType() == sku).ToList();
-                    var count = products.Count();
+                    var products = stockUnits.Where(s => s.GetType() == sku).ToList();
+                    double count = products.Count();
 
                     if (count > 0)
                     {
