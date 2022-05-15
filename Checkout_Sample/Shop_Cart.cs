@@ -11,7 +11,7 @@ namespace Checkout_Sample
             this.stockUnits.Add(stock);
         }
 
-        public  decimal CalculatePrice()
+        public  double CalculatePrice()
         {
             return Shop.CalculatePrice(this.stockUnits);
         }

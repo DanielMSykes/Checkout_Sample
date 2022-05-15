@@ -2,9 +2,9 @@
 {
     public class Product
     {
-        public readonly decimal Price;
+        public readonly double Price;
 
-        public Product(decimal price)
+        public Product(double price)
         {
             this.Price = price;
         }
