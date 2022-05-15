@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Checkout_Sample
 {
     public static class Shop
     {
         /* Product/Price mappings */
-        public static Dictionary<Type, decimal> SKUs = new Dictionary<Type, decimal>() 
+        public static Dictionary<Type, decimal> SKUs = new Dictionary<Type, decimal>()
         {
             {typeof(Products.A), 10m },
             {typeof(Products.B), 15m },
@@ -21,7 +19,7 @@ namespace Checkout_Sample
         public static Dictionary<Type, Func<List<Product>, decimal>> Discounts = new Dictionary<Type, Func<List<Product>, decimal>>()
         {
             /*3 for 40 of B*/
-            {typeof(Products.B) sku => {
+            {typeof(Products.B), sku => {
                 var multipackB = sku.Where(s => s.GetType() == typeof(Products.B)).ToList();
                 var count = multipackB.Count;
 
@@ -38,7 +36,8 @@ namespace Checkout_Sample
                 }
             }},
             /*25% off for every 2 of 'D' purchased together*/
-            {typeof(Products.D) sku => {
+            {typeof(Products.D), sku => {
+
                 var multipackD = sku.Where(s => s.GetType() == typeof(Products.D)).ToList();
                 var count = multipackD.Count;
 
@@ -46,10 +45,12 @@ namespace Checkout_Sample
                 {
                     var price = multipackD[0].Price;
                     var discount = Math.Floor((count / 2.0m) * 27.5m);
+
+                    return (price - discount);
                 }
-                else 
-                { 
-                    return 0m; 
+                else
+                {
+                    return 0m;
                 }
             }}
         };
@@ -67,6 +68,33 @@ namespace Checkout_Sample
             {
                 throw new ArgumentOutOfRangeException("SKU does not exist");
             }
+        }
+
+             
+        /*return the price of the basket with all discounts applied*/
+        public static decimal CalculatePrice(List<Product> stockUnits)
+        {
+            decimal sum = 0m;
+
+            foreach (Type sku in Shop.SKUs.Keys)
+            {
+                if (Shop.Discounts.TryGetValue(sku, out var discount))
+                {
+                    sum += discount(stockUnits);
+                }
+                else
+                {
+                    var products = stockUnits.Where(u => u.GetType() == sku).ToList();
+                    var count = products.Count();
+
+                    if (count > 0)
+                    {
+                        sum += count * products[0].Price;
+                    }
+                }
+            }
+
+            return sum;
         }
     }
 }

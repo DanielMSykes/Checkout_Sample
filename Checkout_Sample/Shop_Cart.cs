@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Checkout_Sample
 {
     public class Shop_Cart
     {
-        private List<Product> stock = new List<Product>();
+        private List<Product> stockUnits = new List<Product>();
 
         public void AddStock(Product stock)
         {
-            this.stock.Add(stock);
+            this.stockUnits.Add(stock);
         }
 
-        public  decimal CalculateCost()
+        public  decimal CalculatePrice()
         {
-            return Shop.CalculateCost(this.stock);
+            return Shop.CalculatePrice(this.stockUnits);
         }
     }
 }
